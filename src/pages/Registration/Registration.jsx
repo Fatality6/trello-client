@@ -1,11 +1,24 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { checkIsAuth, clearStatus, registerUser } from '../../redux/auth/authSlice'
 
 export const Registration = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const { status } = useSelector((state => state.auth))
+  const isAuth = useSelector(checkIsAuth)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(status) toast(status)
+    if(isAuth) navigate('/')
+    if(status) dispatch(clearStatus())
+  },[navigate,dispatch,status,isAuth])
+  
 
   const handleSubmit = () => {
     try {
@@ -48,7 +61,7 @@ export const Registration = () => {
         <button
           onClick={handleSubmit}
           className='flex justify-center items-center text-xs text-white bg-gray-600 rounded-sm py-2 px-4'>
-          Войти
+          Подтвердить
         </button>
         <Link
           to={'/login'}
