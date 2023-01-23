@@ -1,13 +1,23 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { loginUser } from '../../redux/auth/authSlice'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { checkIsAuth, clearStatus, loginUser } from '../../redux/auth/authSlice'
 
 export const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const { status } = useSelector((state => state.auth))
+  const isAuth = useSelector(checkIsAuth)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(status) toast(status)
+    if(isAuth) navigate('/')
+    if(status) dispatch(clearStatus())
+  },[navigate,dispatch,status,isAuth])
 
   const handleSubmit = () => {
     try {
