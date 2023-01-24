@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import headerLogo from '../../../img/headerlogo.gif'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
