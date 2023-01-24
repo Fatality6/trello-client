@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { logout } from '../../../redux/auth/authSlice'
-import { Dialog } from '@headlessui/react'
+// import { Dialog } from '@headlessui/react'
 
 export const Header = () => {
-    const [isOpen, setIsOpen] = useState(true)
+    // const [isOpen, setIsOpen] = useState(true)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
