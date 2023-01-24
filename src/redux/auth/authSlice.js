@@ -105,7 +105,7 @@ export const authSlice = createSlice({
         [loginUser.rejected]: (state, action) => {
             state.status = action.payload.message
             state.isLoading = false
-        },
+        }
     }
 })
 
