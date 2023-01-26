@@ -61,6 +61,24 @@ export const loginUser = createAsyncThunk(
     }
 )
 
+//создаём Thunk для выполнения запроса на сервер для получения профиля
+//метод createAsyncThunk создаёт Thunk 
+export const getMe = createAsyncThunk(
+    //адрес должен быть уникальным для каждого Thunk
+    'auth/getMe',
+    //второй параметр это асинх функция
+    //и деалем запрос на сервер
+    async() => {
+        try {
+            const { data } = await axios.get('auth/me')
+            //возвращаем data
+            return data
+        } catch (error) {
+            console.log(error)
+        }
+    }
+)
+
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -105,7 +123,22 @@ export const authSlice = createSlice({
         [loginUser.rejected]: (state, action) => {
             state.status = action.payload.message
             state.isLoading = false
-        }
+        },
+        //get me
+        [getMe.pending]: (state) => {
+            state.isLoading = true
+            state.status = null
+        },
+        [getMe.fulfilled]: (state, action) => {
+            state.isLoading = false
+            state.status = null
+            state.user = action.payload?.user
+            state.token = action.payload?.token
+        },
+        [getMe.rejected]: (state, action) => {
+            state.status = action.payload.message
+            state.isLoading = false
+        },
     }
 })
 

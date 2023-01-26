@@ -28,6 +28,16 @@ export const getAllBoards = createAsyncThunk('board/getAllBoards', async() => {
     }
 })
 
+//delete board
+export const removeBoard = createAsyncThunk('board/removeBoard', async(id) => {
+    try {
+        const { data } = await axios.delete(`boards/${id}`)
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 export const boardSlice = createSlice({
     name: 'board',
     initialState,
@@ -58,7 +68,21 @@ export const boardSlice = createSlice({
         [getAllBoards.rejected]: (state) => {
             state.isLoading = false
         },
+        //delete board
+        [removeBoard.pending]: (state) => {
+            state.isLoading = true
+        },
+        [removeBoard.fulfilled]: (state, action) => {
+            state.isLoading = false
+            //перезаписываем state без поста с полученным id
+            state.boards = state.boards.filter((board) => board._id !== action.payload.id)
+        },
+        [removeBoard.rejected]: (state) => {
+            state.isLoading = false
+        }
     }
 })
+
+export const boards = (state) => state.board.boards
 
 export default boardSlice.reducer
