@@ -8,7 +8,6 @@ const instance = axios.create({
 //с каждым запросом на сервер из localStorage отправляется токен
 instance.interceptors.request.use((config)=>{
     config.headers.Authorization = window.localStorage.getItem('token')
-
     return config
 })
 
