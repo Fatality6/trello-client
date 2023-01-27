@@ -89,6 +89,7 @@ export const authSlice = createSlice({
             state.isLoading = false
             state.status = null
         },
+        //очистка статуса
         clearStatus: (state) => {
             state.status = null
         }
@@ -142,6 +143,7 @@ export const authSlice = createSlice({
     }
 })
 
+//checkIsAuth хранит информацию о авторизации
 export const checkIsAuth = (state) => Boolean(state.auth.token)
 
 export const { logout, clearStatus } = authSlice.actions

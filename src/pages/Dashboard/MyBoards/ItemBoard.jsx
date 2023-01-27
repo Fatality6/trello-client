@@ -6,13 +6,17 @@ import { toast } from 'react-toastify'
 import { removeBoard } from '../../../redux/board/boardSlice'
 
 export const ItemBoard = ({ title, id }) => {
+    //стейт для хранения состояния иконки
     const [showIcon, setShowIcon] = useState(false)
     const dispatch = useDispatch()
 
+    // функция удаления доски
     const handleDelete = () => {
         try {
-            dispatch(removeBoard(id))
-            toast('Доска была удалена')
+            if (confirm(`Вы уверены что хотите удалить доску "${title}"?`)) { // eslint-disable-line no-restricted-globals
+                dispatch(removeBoard(id))
+                toast('Доска была удалена')
+            }
         } catch (error) {
             console.log(error)
         }

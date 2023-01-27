@@ -6,11 +6,15 @@ import { ItemBoard } from './ItemBoard'
 import { Dialog } from '@headlessui/react'
 
 export const MyBoards = () => {
+    //получаем информацию о досках из Redux
     const myBoards = useSelector(boards)
+    //состояние модального окна
     const [isOpen, setIsOpen] = useState(false)
+    //стейт для имени новой доски
     const [boardName, setBoardName] = useState('')
     const dispatch = useDispatch()
 
+    //функция создания новой доски
     const handlerSubmit = () => {
         try {
             dispatch(createBoard(boardName))
