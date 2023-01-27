@@ -10,8 +10,11 @@ export const Header = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    //функция выхода из аккаунта
     const logoutHandler = () => {
+        //чистим redux
         dispatch(logout())
+        //удаляем токен из localStorage
         window.localStorage.removeItem('token')
         toast('Вы вышли из системы')
         navigate('/login')

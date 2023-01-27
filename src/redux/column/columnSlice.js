@@ -18,25 +18,25 @@ export const createColumn = createAsyncThunk('column/createColumn', async({ boar
     }
 })
 
-// //get all boards
-// export const getAllBoards = createAsyncThunk('board/getAllBoards', async() => {
-//     try {
-//         const { data } = await axios.get('/boards')
-//         return data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
+//get all columns
+export const getAllColumns = createAsyncThunk('column/getAllColumns', async(boardId) => {
+    try {
+        const { data } = await axios.get('/columns',{params: {boardId}})
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+})
 
-// //delete board
-// export const removeBoard = createAsyncThunk('board/removeBoard', async(id) => {
-//     try {
-//         const { data } = await axios.delete(`boards/${id}`)
-//         return data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// })
+//delete column
+export const removeColumn = createAsyncThunk('column/removeColumn', async(id) => {
+    try {
+        const { data } = await axios.delete(`/columns/${id}`)
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+})
 
 export const columnSlice = createSlice({
     name: 'column',
@@ -50,36 +50,36 @@ export const columnSlice = createSlice({
         },
         [createColumn.fulfilled]: (state, action) => {
             state.isLoading = false
-            state.columns.push(action.payload.newBoard)
+            state.columns.push(action.payload.newColumn)
             state.status = action.payload.message
         },
         [createColumn.rejected]: (state, action) => {
             state.status = action.payload.message
             state.isLoading = false
         },
-        // //get all boards
-        // [getAllBoards.pending]: (state) => {
-        //     state.isLoading = true
-        // },
-        // [getAllBoards.fulfilled]: (state, action) => {
-        //     state.isLoading = false
-        //     state.boards = action.payload.boards
-        // },
-        // [getAllBoards.rejected]: (state) => {
-        //     state.isLoading = false
-        // },
-        // //delete board
-        // [removeBoard.pending]: (state) => {
-        //     state.isLoading = true
-        // },
-        // [removeBoard.fulfilled]: (state, action) => {
-        //     state.isLoading = false
-        //     //перезаписываем state без поста с полученным id
-        //     state.boards = state.boards.filter((board) => board._id !== action.payload.id)
-        // },
-        // [removeBoard.rejected]: (state) => {
-        //     state.isLoading = false
-        // }
+        //get all columns
+        [getAllColumns.pending]: (state) => {
+            state.isLoading = true
+        },
+        [getAllColumns.fulfilled]: (state, action) => {
+            state.isLoading = false
+            state.columns = action.payload.columns
+        },
+        [getAllColumns.rejected]: (state) => {
+            state.isLoading = false
+        },
+        //delete column
+        [removeColumn.pending]: (state) => {
+            state.isLoading = true
+        },
+        [removeColumn.fulfilled]: (state, action) => {
+            state.isLoading = false
+            //перезаписываем state без поста с полученным id
+            state.columns = state.columns.filter((column) => column._id !== action.payload.id)
+        },
+        [removeColumn.rejected]: (state) => {
+            state.isLoading = false
+        }
     }
 })
 

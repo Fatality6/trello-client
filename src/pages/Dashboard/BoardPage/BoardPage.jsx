@@ -1,34 +1,33 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Header } from '../../../components/Header/Header'
-import axios from '../../../utils/axios'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { createColumn } from '../../../redux/column/columnSlice'
+import { createColumn, getAllColumns } from '../../../redux/column/columnSlice'
 import { ItemColumn } from './ItemColumn'
 import { Dialog } from '@headlessui/react'
 
 
 export const BoardPage = () => {
-  const [board, setBoard] = useState(null)
+  //стейт для хранения имени новой колонки
   const [columnName, setColumnName] = useState('')
+  //стейт для хранения состояния модального окна
   const [isOpen, setIsOpen] = useState(false)
+  //получаем массив из redux
+  const { columns } = useSelector((state) => state.column)
   const dispatch = useDispatch()
   const params = useParams()
-  console.log(board)
+  //переменная хранит в себе id из адресной строки
+  const boardId = params.id
 
-  const fetchBoard = useCallback(async () => {
-    const { data } = await axios.get(`/boards/${params.id}`)
-    setBoard(data)
-  }, [params.id])
-
+  //обновление данных о всех колонках
   useEffect(() => {
-    fetchBoard()
-  }, [fetchBoard])
+    dispatch(getAllColumns(boardId))
+  },[dispatch,boardId])
 
+  //функция для создания новой колонки
   const handlerSubmit = () => {
     try {
-      const boardId = params.id
       dispatch(createColumn({ boardId, columnName }))
       setIsOpen(false)
       setColumnName('')
@@ -38,7 +37,8 @@ export const BoardPage = () => {
     }
   }
 
-  if (!board) {
+  //прелоадер
+  if (!columns) {
     return <div className="text-xl text-center text-white py-10">...</div>
 }
 
@@ -49,7 +49,7 @@ export const BoardPage = () => {
         <div className='basis-1/4 bg-blue-300' >nav</div>
         <div className='basis-3/4 bg-blue-400'>
           <div className='flex flex-wrap justify-start items-center bg-blue-400 p-4 gap-4'>
-            {board.columns[0] && board.columns.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id} />)}
+            {columns[0] && columns.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id}/>)}
             <div>
               <button
                 onClick={() => setIsOpen(true)}

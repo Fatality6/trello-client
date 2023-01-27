@@ -9,12 +9,15 @@ import { getAllBoards } from '../../redux/board/boardSlice'
 export const Dashboard = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  //получаем из redux информацию о авторизации
   const isAuth = useSelector(checkIsAuth)
 
+  //если авторизация отсутствует,то переход на авторизацию
   useEffect(() => {
     if (!isAuth) navigate('/login')
   }, [isAuth, navigate])
 
+  //обновление информации о досках
   useEffect(() => {
     dispatch(getAllBoards())
   }, [dispatch])
