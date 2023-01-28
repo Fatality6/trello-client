@@ -27,7 +27,7 @@ export const Dashboard = () => {
     <div className='min-h-screen bg-blue-400'>
       <Header />
       <div className='flex'>
-        <div className='basis-1/4 bg-blue-300' >nav</div>
+        <div className='basis-1/4 bg-blue-300 text-center' >здесь будет навигация</div>
         <div className='basis-3/4 bg-blue-400'><MyBoards /></div>
       </div>
     </div>

@@ -1,14 +1,35 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
-import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { cards, createCard, getAllCards } from '../../../redux/card/cardSlice'
 import { removeColumn } from '../../../redux/column/columnSlice'
+import { ItemCard } from './ItemCard'
+import axios from '../../../utils/axios.js'
 
 export const ItemColumn = ({ title, id }) => {
   //стейт для хранения состояния иконки удаления
   const [showIcon, setShowIcon] = useState(false)
+  //стейт для массива карточек
+  const [cardsArr, setCardsArr] = useState(null)
+  const cards1 = useSelector(cards)
+  //стейт для хранения состояния отображения textarea
+  const [showTextArea, setShowTextArea] = useState(false)
+  //стейт для имени новой карточки
+  const [cardName, setCardName] = useState('')
   const dispatch = useDispatch()
+
+  //функция создания карточки
+  const addCard = async() => {
+    try {
+      dispatch(createCard({ id, cardName }))
+      dispatch(getAllCards(id))
+      setShowTextArea(false)
+      setCardName('')
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   //функция для удаления колонки
   const handleDelete = () => {
@@ -17,24 +38,73 @@ export const ItemColumn = ({ title, id }) => {
         dispatch(removeColumn(id))
         toast('Доска была удалена')
       }
-
     } catch (error) {
       console.log(error)
     }
   }
-  
+
+  const fetchCards = useCallback(async () => {
+    const { data } = await axios.get('/cards',{params: {id}})
+    setCardsArr(data)
+}, [id])
+
+useEffect(() => {
+  fetchCards()
+}, [fetchCards,cards1])
+
+   //прелоадер
+   if (!cardsArr) {
+    return <div className="text-xl text-center text-white py-10">...</div>
+}
+
   return (
     <div
-      className='relative flex justify-center items-center h-28 w-[200px] bg-sky-700 rounded-md text-white cursor-pointer hover:bg-sky-800 duration-300'
+      className='relative flex h-min w-[200px] bg-sky-200 rounded-md text-gray-700 cursor-pointer'
+      /* появление иконки при наведении мыши */
       onMouseEnter={() => setShowIcon(true)}
       onMouseLeave={() => setShowIcon(false)}
     >
-      <Link to={`/${id}`} className='h-full w-full px-4 py-6'>{title}</Link>
+      {/* исчезновение textarea при потере фокуса */}
+      <div className='flex flex-col p-2 w-full gap-3' onBlur={() => !cardName && setShowTextArea(false)} >
+
+        <div className='w-full text-sm'>{title}</div>
+
+        {cardsArr.cards.map((card) => {
+          if (card.columnId === id) return <ItemCard key={card._id} id={card._id} title={card.title} /> 
+          return null
+        })
+        }
+
+        {!showTextArea &&
+          <div className='p-2'>
+            <button
+              onClick={() => setShowTextArea(true)}
+              className='bg-sky-300/50 hover:bg-sky-400 text-gray-600 border-2 border-sky-300 py-1 px-2 rounded-md duration-300'>Добавить карточку</button>
+          </div>}
+
+        {showTextArea &&
+          <div>
+            <textarea
+              value={cardName}
+              onChange={(e) => setCardName(e.target.value)}
+              className='rounded-xs p-2 text-xs h-8 w-full'
+              placeholder='Заголовок карточки'
+              autoFocus={showTextArea}></textarea>
+            <div className='text-left'>
+              <button
+                onClick={addCard}
+                className='bg-sky-300/50 hover:bg-sky-400 text-gray-600  py-1 px-2 rounded-md duration-300'>Добавить</button>
+            </div>
+          </div>}
+
+      </div>
+
       {showIcon && (
         <div className='absolute top-2 right-2 opacity-50' onClick={handleDelete}>
-          <FaTrashAlt size={12} color='white' />
+          <FaTrashAlt size={12} color='gray' />
         </div>
       )}
+
     </div>
   )
 }

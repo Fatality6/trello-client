@@ -83,6 +83,6 @@ export const columnSlice = createSlice({
     }
 })
 
-
+export const columns = (state) => state.column.columns
 
 export default columnSlice.reducer
