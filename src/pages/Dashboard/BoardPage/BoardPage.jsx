@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Header } from '../../../components/Header/Header'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { createColumn, getAllColumns } from '../../../redux/column/columnSlice'
+import { columns, createColumn, getAllColumns } from '../../../redux/column/columnSlice'
 import { ItemColumn } from './ItemColumn'
 import { Dialog } from '@headlessui/react'
 
@@ -14,7 +14,7 @@ export const BoardPage = () => {
   //стейт для хранения состояния модального окна
   const [isOpen, setIsOpen] = useState(false)
   //получаем массив из redux
-  const { columns } = useSelector((state) => state.column)
+  const columnsArr = useSelector(columns)
   const dispatch = useDispatch()
   const params = useParams()
   //переменная хранит в себе id из адресной строки
@@ -38,7 +38,7 @@ export const BoardPage = () => {
   }
 
   //прелоадер
-  if (!columns) {
+  if (!columnsArr) {
     return <div className="text-xl text-center text-white py-10">...</div>
 }
 
@@ -46,10 +46,10 @@ export const BoardPage = () => {
     <div className='min-h-screen bg-blue-400'>
       <Header />
       <div className='flex'>
-        <div className='basis-1/4 bg-blue-300' >nav</div>
+        <div className='basis-1/4 bg-blue-300 text-center' >здесь будет навигация</div>
         <div className='basis-3/4 bg-blue-400'>
           <div className='flex flex-wrap justify-start items-center bg-blue-400 p-4 gap-4'>
-            {columns[0] && columns.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id}/>)}
+            {columnsArr.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id}/>)}
             <div>
               <button
                 onClick={() => setIsOpen(true)}
