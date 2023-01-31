@@ -2,9 +2,10 @@ import React from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { removeCard } from '../../../redux/card/cardSlice'
+import { removeCard } from '../../../redux/column/columnSlice'
 
-export const ItemCard = ({id,title}) => {
+
+export const ItemCard = ({id, title}) => {
     const dispatch = useDispatch()
 
     //функция для удаления карточки

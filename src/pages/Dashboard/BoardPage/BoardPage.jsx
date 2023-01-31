@@ -13,7 +13,7 @@ export const BoardPage = () => {
   const [columnName, setColumnName] = useState('')
   //стейт для хранения состояния модального окна
   const [isOpen, setIsOpen] = useState(false)
-  //получаем массив из redux
+  //подписываемся на изменения колонок в Redux
   const columnsArr = useSelector(columns)
   const dispatch = useDispatch()
   const params = useParams()
@@ -38,7 +38,7 @@ export const BoardPage = () => {
   }
 
   //прелоадер
-  if (!columnsArr) {
+  if (!columnsArr.length) {
     return <div className="text-xl text-center text-white py-10">...</div>
 }
 
@@ -48,8 +48,8 @@ export const BoardPage = () => {
       <div className='flex'>
         <div className='basis-1/4 bg-blue-300 text-center' >здесь будет навигация</div>
         <div className='basis-3/4 bg-blue-400'>
-          <div className='flex flex-wrap justify-start items-center bg-blue-400 p-4 gap-4'>
-            {columnsArr.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id}/>)}
+          <div className='flex flex-wrap justify-start bg-blue-400 p-4 gap-4'>
+            {columnsArr?.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id} cardsArr={el.cards}/>)}
             <div>
               <button
                 onClick={() => setIsOpen(true)}
