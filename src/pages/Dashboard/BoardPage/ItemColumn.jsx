@@ -1,18 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
-import { cards, createCard, getAllCards } from '../../../redux/card/cardSlice'
-import { removeColumn } from '../../../redux/column/columnSlice'
+import { createCard, removeColumn } from '../../../redux/column/columnSlice'
 import { ItemCard } from './ItemCard'
-import axios from '../../../utils/axios.js'
 
-export const ItemColumn = ({ title, id }) => {
+
+export const ItemColumn = ({ title, id, cardsArr}) => {
   //стейт для хранения состояния иконки удаления
   const [showIcon, setShowIcon] = useState(false)
-  //стейт для массива карточек
-  const [cardsArr, setCardsArr] = useState(null)
-  const cards1 = useSelector(cards)
   //стейт для хранения состояния отображения textarea
   const [showTextArea, setShowTextArea] = useState(false)
   //стейт для имени новой карточки
@@ -23,7 +19,6 @@ export const ItemColumn = ({ title, id }) => {
   const addCard = async() => {
     try {
       dispatch(createCard({ id, cardName }))
-      dispatch(getAllCards(id))
       setShowTextArea(false)
       setCardName('')
     } catch (error) {
@@ -43,15 +38,6 @@ export const ItemColumn = ({ title, id }) => {
     }
   }
 
-  const fetchCards = useCallback(async () => {
-    const { data } = await axios.get('/cards',{params: {id}})
-    setCardsArr(data)
-}, [id])
-
-useEffect(() => {
-  fetchCards()
-}, [fetchCards,cards1])
-
    //прелоадер
    if (!cardsArr) {
     return <div className="text-xl text-center text-white py-10">...</div>
@@ -69,11 +55,7 @@ useEffect(() => {
 
         <div className='w-full text-sm'>{title}</div>
 
-        {cardsArr.cards.map((card) => {
-          if (card.columnId === id) return <ItemCard key={card._id} id={card._id} title={card.title} /> 
-          return null
-        })
-        }
+        {cardsArr.map((card) => <ItemCard key={card._id} id={card._id} title={card.title}/> )}
 
         {!showTextArea &&
           <div className='p-2'>

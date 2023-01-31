@@ -18,6 +18,16 @@ export const createColumn = createAsyncThunk('column/createColumn', async({ boar
     }
 })
 
+//create  card
+export const createCard = createAsyncThunk('card/createCard', async({ id, cardName }) => {
+    try {
+        const { data } = await axios.post('/cards', { id, cardName })
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 //get all columns
 export const getAllColumns = createAsyncThunk('column/getAllColumns', async(boardId) => {
     try {
@@ -32,6 +42,16 @@ export const getAllColumns = createAsyncThunk('column/getAllColumns', async(boar
 export const removeColumn = createAsyncThunk('column/removeColumn', async(id) => {
     try {
         const { data } = await axios.delete(`/columns/${id}`)
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+//delete card
+export const removeCard = createAsyncThunk('card/removeCard', async(id) => {
+    try {
+        const { data } = await axios.delete(`/cards/${id}`)
         return data
     } catch (error) {
         console.log(error)
@@ -57,6 +77,20 @@ export const columnSlice = createSlice({
             state.status = action.payload.message
             state.isLoading = false
         },
+        //create card
+        [createCard.pending]: (state) => {
+            state.isLoading = true
+            state.status = null
+        },
+        [createCard.fulfilled]: (state, action) => {
+            state.isLoading = false
+            state.columns.find(column => column._id === action.payload.id).cards.push(action.payload.newCard)
+            state.status = action.payload.message
+        },
+        [createCard.rejected]: (state, action) => {
+            state.status = action.payload.message
+            state.isLoading = false
+        },
         //get all columns
         [getAllColumns.pending]: (state) => {
             state.isLoading = true
@@ -78,6 +112,20 @@ export const columnSlice = createSlice({
             state.columns = state.columns.filter((column) => column._id !== action.payload.id)
         },
         [removeColumn.rejected]: (state) => {
+            state.isLoading = false
+        },
+        //delete card
+        [removeCard.pending]: (state) => {
+            state.isLoading = true
+        },
+        [removeCard.fulfilled]: (state, action) => {
+            state.isLoading = false
+            //находим индекс удалённой карточки в массиве
+            const index = state.columns.find(column => column._id === action.payload.columnId).cards.findIndex((card) => card._id === action.payload.cardId)
+            //удаляем из массива карточку
+            state.columns.find(column => column._id === action.payload.columnId).cards.splice(index,1)
+        },
+        [removeCard.rejected]: (state) => {
             state.isLoading = false
         }
     }
