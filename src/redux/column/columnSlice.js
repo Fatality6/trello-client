@@ -28,6 +28,16 @@ export const createCard = createAsyncThunk('card/createCard', async({ id, cardNa
     }
 })
 
+//update card
+export const updateCard = createAsyncThunk('card/updateCard', async(updatedCard) => {
+    try {
+        const { data } = await axios.put(`/cards/${updatedCard.id}`, updatedCard)
+        return data
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 //get all columns
 export const getAllColumns = createAsyncThunk('column/getAllColumns', async(boardId) => {
     try {
@@ -100,6 +110,18 @@ export const columnSlice = createSlice({
             state.columns = action.payload.columns
         },
         [getAllColumns.rejected]: (state) => {
+            state.isLoading = false
+        },
+        //update card
+        [updateCard.pending]: (state) => {
+            state.isLoading = true
+        },
+        [updateCard.fulfilled]: (state, action) => {
+            state.isLoading = false
+            //находим колонку и карту и изменяем title
+            state.columns.find(column => column._id === action.payload.columnId).cards.find(card => card._id === action.payload._id).title = action.payload.title
+        },
+        [updateCard.rejected]: (state) => {
             state.isLoading = false
         },
         //delete column
