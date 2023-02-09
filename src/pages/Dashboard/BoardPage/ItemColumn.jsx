@@ -31,7 +31,7 @@ export const ItemColumn = ({ title, id, cardsArr}) => {
     try {
       if (confirm(`Вы уверены что хотите удалить колонку "${title}"?`)) { // eslint-disable-line no-restricted-globals
         dispatch(removeColumn(id))
-        toast('Доска была удалена')
+        toast('Колонка была удалена')
       }
     } catch (error) {
       console.log(error)
@@ -78,9 +78,7 @@ export const ItemColumn = ({ title, id, cardsArr}) => {
                 className='bg-sky-300/50 hover:bg-sky-400 text-gray-600  py-1 px-2 rounded-md duration-300'>Добавить</button>
             </div>
           </div>}
-
       </div>
-
       {showIcon && (
         <div className='absolute top-2 right-2 opacity-50' onClick={handleDelete}>
           <FaTrashAlt size={12} color='gray' />

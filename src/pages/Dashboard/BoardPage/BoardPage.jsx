@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Header } from '../../../components/Header/Header'
 import { useDispatch, useSelector } from 'react-redux'
-import { toast } from 'react-toastify'
-import { columns, createColumn, getAllColumns } from '../../../redux/column/columnSlice'
+import { columns, getAllColumns } from '../../../redux/column/columnSlice'
 import { ItemColumn } from './ItemColumn'
-import { Dialog } from '@headlessui/react'
+import { NewColumn } from '../../../components/Modal/NewColumn'
+
 
 
 export const BoardPage = () => {
-  //стейт для хранения имени новой колонки
+  // состояние новой колонки
   const [columnName, setColumnName] = useState('')
-  //стейт для хранения состояния модального окна
+  // состояние модального окна создания новой колонки
   const [isOpen, setIsOpen] = useState(false)
-  //подписываемся на изменения колонок в Redux
+  // подписываемся на изменения колонок в Redux
   const columnsArr = useSelector(columns)
   const dispatch = useDispatch()
   const params = useParams()
@@ -23,33 +23,18 @@ export const BoardPage = () => {
   //обновление данных о всех колонках
   useEffect(() => {
     dispatch(getAllColumns(boardId))
-  },[dispatch,boardId])
-
-  //функция для создания новой колонки
-  const handlerSubmit = () => {
-    try {
-      dispatch(createColumn({ boardId, columnName }))
-      setIsOpen(false)
-      setColumnName('')
-      toast('Колонка создана')
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  //прелоадер
-  if (!columnsArr.length) {
-    return <div className="text-xl text-center text-white py-10">...</div>
-}
+  }, [dispatch, boardId])
 
   return (
     <div className='min-h-screen bg-blue-400'>
       <Header />
-      <div className='flex'>
+      {/* прелоадер */}
+      {!columnsArr.length && <div className="text-xl text-center text-white py-10">...</div>}
+      {columnsArr.length && <div className='flex'>
         <div className='basis-1/4 bg-blue-300 text-center' >здесь будет навигация</div>
         <div className='basis-3/4 bg-blue-400'>
           <div className='flex flex-wrap justify-start bg-blue-400 p-4 gap-4'>
-            {columnsArr?.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id} cardsArr={el.cards}/>)}
+            {columnsArr?.map((el) => <ItemColumn key={el._id} title={el.title} id={el._id} cardsArr={el.cards} />)}
             <div>
               <button
                 onClick={() => setIsOpen(true)}
@@ -57,30 +42,16 @@ export const BoardPage = () => {
                 Добавить новую колонку
               </button>
             </div>
-            <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-              <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-black/30">
-                <Dialog.Panel className="flex flex-col justify-center items-center gap-2 bg-sky-100 p-4 rounded-lg">
-                  <Dialog.Title className='text-sky-800'>Создание новой колонки</Dialog.Title>
-                  <form onSubmit={(e) => e.preventDefault()}>
-                    <input
-                      value={columnName}
-                      onChange={(e) => setColumnName(e.target.value)}
-                      placeholder='Название колонки'
-                      className='px-2 rounded-md border-2 border-sky-200'></input>
-                    <div className='flex justify-center mt-4'>
-                      <button
-                        onClick={handlerSubmit}
-                        className="bg-sky-600 text-white py-1 px-2 rounded-md hover:bg-sky-500 duration-300">
-                        Создать
-                      </button>
-                    </div>
-                  </form>
-                </Dialog.Panel>
-              </div>
-            </Dialog>
+            {/* вызов модального окна */}
+            <NewColumn
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+              boardId={boardId}
+              columnName={columnName}
+              setColumnName={setColumnName} />
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   )
 }
