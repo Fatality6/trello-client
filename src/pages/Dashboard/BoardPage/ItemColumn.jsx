@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { FaTrashAlt } from 'react-icons/fa'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { createCard, removeColumn } from '../../../redux/column/columnSlice'
+import { columns, createCard, removeColumn } from '../../../redux/column/columnSlice'
 import { ItemCard } from './ItemCard'
 
 
@@ -14,6 +14,7 @@ export const ItemColumn = ({ title, id, cardsArr}) => {
   //стейт для имени новой карточки
   const [cardName, setCardName] = useState('')
   const dispatch = useDispatch()
+  const columnsArr = useSelector(columns)
 
   //функция создания карточки
   const addCard = async() => {
@@ -55,7 +56,7 @@ export const ItemColumn = ({ title, id, cardsArr}) => {
 
         <div className='w-full text-sm'>{title}</div>
 
-        {cardsArr.map((card) => <ItemCard key={card._id} id={card._id} title={card.title}/> )}
+        {cardsArr.map((card) => <ItemCard key={card._id} id={card._id} title={card.title} columnsArr={columnsArr}/> )}
 
         {!showTextArea &&
           <div className='p-2'>
