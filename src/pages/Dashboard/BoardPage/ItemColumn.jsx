@@ -50,6 +50,7 @@ export const ItemColumn = ({ title, id, cardsArr}) => {
       /* появление иконки при наведении мыши */
       onMouseEnter={() => setShowIcon(true)}
       onMouseLeave={() => setShowIcon(false)}
+      onBlur={() => setShowIcon(false)}
     >
       {/* исчезновение textarea при потере фокуса */}
       <div className='flex flex-col p-2 w-full gap-3' onBlur={() => !cardName && setShowTextArea(false)} >

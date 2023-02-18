@@ -44,6 +44,17 @@ export const ItemCard = ({ id, title, columnsArr }) => {
         }
     }
 
+    //функция по переносу карточки
+    const relocationCard = () => {
+        try {
+            const updatedCard = { id: id, title: task, columnId: selectedColumn }
+            dispatch(updateCard(updatedCard))
+            setIsOpen(false)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div>
             <div
@@ -88,7 +99,7 @@ export const ItemCard = ({ id, title, columnsArr }) => {
                             </select>
                             <button
                                 disabled={selectedColumn === ''}
-                                onClick={() => console.log('нажал')}
+                                onClick={relocationCard}
                                 className={`py-1 px-2 rounded-md hover:bg-sky-500 duration-300 mx-1 ${selectedColumn === '' ? 'bg-gray-400' : 'bg-sky-600 text-white'}`}
                             >
                                 Перенести

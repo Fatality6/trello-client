@@ -29,8 +29,8 @@ export const BoardPage = () => {
     <div className='min-h-screen bg-blue-400'>
       <Header />
       {/* прелоадер */}
-      {!columnsArr.length && <div className="text-xl text-center text-white py-10">...</div>}
-      {columnsArr.length && <div className='flex'>
+      {/* {!columnsArr.length && <div className="text-xl text-center text-white py-10">...</div>} */}
+      <div className='flex'>
         <div className='basis-1/4 bg-blue-300 text-center' >здесь будет навигация</div>
         <div className='basis-3/4 bg-blue-400'>
           <div className='flex flex-wrap justify-start bg-blue-400 p-4 gap-4'>
@@ -51,7 +51,7 @@ export const BoardPage = () => {
               setColumnName={setColumnName} />
           </div>
         </div>
-      </div>}
+      </div>
     </div>
   )
 }
